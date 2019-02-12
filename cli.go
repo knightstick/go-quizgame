@@ -15,7 +15,8 @@ type CLI struct {
 
 // NewCLI creates a new CLI to play the quiz game
 func NewCLI(filename string, in io.Reader, out io.Writer) *CLI {
-	return NewCLIWithLoader(filename, in, out, nil)
+	loader := &FileSystemQuestionLoader{}
+	return NewCLIWithLoader(filename, in, out, loader)
 }
 
 // NewCLIWithLoader allows creating a CLI with a specific implementation of
