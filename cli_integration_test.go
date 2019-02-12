@@ -45,13 +45,7 @@ func TestCLIIntegration(t *testing.T) {
 	cli.Run(questionFile.Name())
 
 	// Loaded the questions
-	if loader.loadCalls != 1 {
-		t.Errorf("did not load the questions")
-	}
-
-	if loader.loadedFile != questionFile.Name() {
-		t.Errorf("expected to load file %s, but loaded %s", questionFile.Name(), loader.loadedFile)
-	}
+	assertLoadedFile(t, loader, questionFile.Name())
 
 	// Played the game
 	if game.playCalls != 1 {
@@ -83,4 +77,16 @@ func createTempFile(t *testing.T, body string) (*os.File, func()) {
 	}
 
 	return tmpfile, removeFile
+}
+
+func assertLoadedFile(t *testing.T, loader *StubQuestionLoader, filename string) {
+	t.Helper()
+
+	if loader.loadCalls != 1 {
+		t.Errorf("did not load the questions")
+	}
+
+	if loader.loadedFile != filename {
+		t.Errorf("expected to load file %s, but loaded %s", filename, loader.loadedFile)
+	}
 }
