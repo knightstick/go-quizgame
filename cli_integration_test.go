@@ -30,12 +30,12 @@ func TestCLIIntegration(t *testing.T) {
 	loader := &StubQuestionLoader{}
 
 	// New CLI with filename
-	cli := quizgame.NewCLIWithLoader(questionFile.Name(), in, out, loader)
-	cli.Run()
+	cli := &quizgame.CLI{QuestionLoader: loader, In: in, Out: out}
+	cli.Run(questionFile.Name())
 
 	// Loaded the questions
 	if loader.loadCalls != 1 {
-		t.Errorf("did not load the questions: %d", loader.loadCalls)
+		t.Errorf("did not load the questions")
 	}
 
 	if loader.loadedFile != questionFile.Name() {
