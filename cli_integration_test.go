@@ -32,8 +32,8 @@ func (game *StubGame) Play([]quizgame.Question) {
 
 func TestCLIIntegration(t *testing.T) {
 	// Create a new CSV
-	questionFile, _ := ioutil.TempFile("", "questions")
-	defer os.Remove(questionFile.Name())
+	questionFile, removeFile := createTempFile(t, "")
+	defer removeFile()
 
 	in := strings.NewReader("\n")
 	out := &bytes.Buffer{}
@@ -65,4 +65,22 @@ func TestCLIIntegration(t *testing.T) {
 	if actualOutput != expectedOutput {
 		t.Errorf("expected output %s, got %s", expectedOutput, out.String())
 	}
+}
+
+func createTempFile(t *testing.T, body string) (*os.File, func()) {
+	t.Helper()
+
+	tmpfile, err := ioutil.TempFile("", "questions")
+
+	if err != nil {
+		t.Fatalf("could not create temp file %v", err)
+	}
+
+	tmpfile.Write([]byte(body))
+
+	removeFile := func() {
+		os.Remove(tmpfile.Name())
+	}
+
+	return tmpfile, removeFile
 }
