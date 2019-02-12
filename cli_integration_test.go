@@ -31,8 +31,7 @@ func TestCLIIntegration(t *testing.T) {
 
 	// New CLI with filename
 	cli := quizgame.NewCLIWithLoader(questionFile.Name(), in, out, loader)
-
-	cli.Play()
+	cli.Run()
 
 	// Loaded the questions
 	if loader.loadCalls != 1 {

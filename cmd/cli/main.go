@@ -11,5 +11,5 @@ func main() {
 	filenamePtr := flag.String("file", "problems.csv", "path for the csv file with the questions and answers")
 
 	cli := quizgame.NewCLI(*filenamePtr, os.Stdin, os.Stdout)
-	cli.Play()
+	cli.Run()
 }

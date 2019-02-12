@@ -28,7 +28,7 @@ func NewCLIWithLoader(filename string, in io.Reader, out io.Writer, loader Quest
 	}
 }
 
-// Play runs the whole game
-func (cli CLI) Play() {
+// Run runs the whole game
+func (cli CLI) Run() {
 	cli.questionLoader.Load(cli.filename)
 }
