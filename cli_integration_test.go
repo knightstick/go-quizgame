@@ -44,19 +44,9 @@ func TestCLIIntegration(t *testing.T) {
 	cli := &quizgame.CLI{QuestionLoader: loader, In: in, Out: out, Game: game}
 	cli.Run(questionFile.Name())
 
-	// Loaded the questions
 	assertLoadedFile(t, loader, questionFile.Name())
-
-	// Played the game
 	assertGamePlayed(t, game, []quizgame.Question{})
-
-	// Outputted the results
-	expectedOutput := "You scored 0 out of 0\n"
-	actualOutput := out.String()
-
-	if actualOutput != expectedOutput {
-		t.Errorf("expected output %s, got %s", expectedOutput, out.String())
-	}
+	assertOutput(t, out, "You scored 0 out of 0\n")
 }
 
 func createTempFile(t *testing.T, body string) (*os.File, func()) {
@@ -94,5 +84,13 @@ func assertGamePlayed(t *testing.T, game *StubGame, questions []quizgame.Questio
 
 	if game.playCalls != 1 {
 		t.Error("did not play the game")
+	}
+}
+
+func assertOutput(t *testing.T, out *bytes.Buffer, expected string) {
+	actual := out.String()
+
+	if actual != expected {
+		t.Errorf("expected output %s, got %s", expected, actual)
 	}
 }
