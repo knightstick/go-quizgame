@@ -15,16 +15,18 @@ type StubQuestionLoader struct {
 	loadedFile string
 }
 
-func (loader *StubQuestionLoader) Load(filename string) {
+func (loader *StubQuestionLoader) Load(filename string) []quizgame.Question {
 	loader.loadCalls = loader.loadCalls + 1
 	loader.loadedFile = filename
+
+	return []quizgame.Question{}
 }
 
 type StubGame struct {
 	playCalls int
 }
 
-func (game *StubGame) Play() {
+func (game *StubGame) Play([]quizgame.Question) {
 	game.playCalls = game.playCalls + 1
 }
 

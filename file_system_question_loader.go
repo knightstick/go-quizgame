@@ -4,6 +4,6 @@ package quizgame
 type FileSystemQuestionLoader struct{}
 
 // Load takes a filename and loads the questions from the file
-func (loader FileSystemQuestionLoader) Load(filename string) {
-
+func (loader FileSystemQuestionLoader) Load(filename string) []Question {
+	return make([]Question, 0)
 }
