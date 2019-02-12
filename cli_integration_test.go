@@ -48,9 +48,7 @@ func TestCLIIntegration(t *testing.T) {
 	assertLoadedFile(t, loader, questionFile.Name())
 
 	// Played the game
-	if game.playCalls != 1 {
-		t.Error("did not play the game")
-	}
+	assertGamePlayed(t, game, []quizgame.Question{})
 
 	// Outputted the results
 	expectedOutput := "You scored 0 out of 0\n"
@@ -88,5 +86,13 @@ func assertLoadedFile(t *testing.T, loader *StubQuestionLoader, filename string)
 
 	if loader.loadedFile != filename {
 		t.Errorf("expected to load file %s, but loaded %s", filename, loader.loadedFile)
+	}
+}
+
+func assertGamePlayed(t *testing.T, game *StubGame, questions []quizgame.Question) {
+	t.Helper()
+
+	if game.playCalls != 1 {
+		t.Error("did not play the game")
 	}
 }
