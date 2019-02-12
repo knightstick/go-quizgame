@@ -1,9 +1,15 @@
 package quizgame
 
-import "io"
+import (
+	"fmt"
+	"io"
+)
 
 // Question is the basic quiz question the user has to answer
-type Question struct{}
+type Question struct {
+	Question string
+	Answer   string
+}
 
 // QuestionLoader takes a filename and can load a list of questions
 type QuestionLoader interface {
@@ -13,6 +19,8 @@ type QuestionLoader interface {
 // Game allows the user to play and answer the questions
 type Game interface {
 	Play([]Question)
+	Score() int
+	NumberOfQuestions() int
 }
 
 // CLI is the command line interface to the quizgame
@@ -37,7 +45,10 @@ func NewCLI(in io.Reader, out io.Writer) *CLI {
 
 // Run runs the whole game
 func (cli CLI) Run(filename string) {
-	cli.QuestionLoader.Load(filename)
-	cli.Game.Play([]Question{})
-	cli.Out.Write([]byte("You scored 0 out of 0\n"))
+	questions := cli.QuestionLoader.Load(filename)
+	cli.Game.Play(questions)
+
+	score := cli.Game.Score()
+	total := cli.Game.NumberOfQuestions()
+	cli.Out.Write([]byte(fmt.Sprintf("You scored %d out of %d\n", score, total)))
 }
