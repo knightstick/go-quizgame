@@ -20,6 +20,14 @@ func (loader *StubQuestionLoader) Load(filename string) {
 	loader.loadedFile = filename
 }
 
+type StubGame struct {
+	playCalls int
+}
+
+func (game *StubGame) Play() {
+	game.playCalls = game.playCalls + 1
+}
+
 func TestCLIIntegration(t *testing.T) {
 	// Create a new CSV
 	questionFile, _ := ioutil.TempFile("", "questions")
@@ -28,9 +36,10 @@ func TestCLIIntegration(t *testing.T) {
 	in := strings.NewReader("\n")
 	out := &bytes.Buffer{}
 	loader := &StubQuestionLoader{}
+	game := &StubGame{}
 
 	// New CLI with filename
-	cli := &quizgame.CLI{QuestionLoader: loader, In: in, Out: out}
+	cli := &quizgame.CLI{QuestionLoader: loader, In: in, Out: out, Game: game}
 	cli.Run(questionFile.Name())
 
 	// Loaded the questions
@@ -42,6 +51,16 @@ func TestCLIIntegration(t *testing.T) {
 		t.Errorf("expected to load file %s, but loaded %s", questionFile.Name(), loader.loadedFile)
 	}
 
-	// Answered the questions
+	// Played the game
+	if game.playCalls != 1 {
+		t.Error("did not play the game")
+	}
+
 	// Outputted the results
+	expectedOutput := "You scored 0 out of 0\n"
+	actualOutput := out.String()
+
+	if actualOutput != expectedOutput {
+		t.Errorf("expected output %s, got %s", expectedOutput, out.String())
+	}
 }
