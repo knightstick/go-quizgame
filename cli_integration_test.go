@@ -2,8 +2,6 @@ package quizgame_test
 
 import (
 	"bytes"
-	"io/ioutil"
-	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -46,7 +44,7 @@ func (game *StubGame) NumberOfQuestions() int {
 
 func TestCLIIntegration(t *testing.T) {
 	t.Run("Scores 0 out of 0 when no questions", func(t *testing.T) {
-		questionFile, removeFile := createTempFile(t, "")
+		questionFile, removeFile := quizgame.CreateTempFile(t, "")
 		defer removeFile()
 
 		in := strings.NewReader("\n")
@@ -59,7 +57,7 @@ func TestCLIIntegration(t *testing.T) {
 	})
 
 	t.Run("Can score 2 out of 3", func(t *testing.T) {
-		questionFile, removeFile := createTempFile(t, "question,answer\n1+1,2\n1+2,3\n1+3,4\n")
+		questionFile, removeFile := quizgame.CreateTempFile(t, "question,answer\n1+1,2\n1+2,3\n1+3,4\n")
 		defer removeFile()
 
 		in := strings.NewReader("2\n3\n666\n")
@@ -71,24 +69,6 @@ func TestCLIIntegration(t *testing.T) {
 		t.Skip("skipping until all pieces integrate together")
 		assertOutput(t, out, "You scored 2 out of 3\n")
 	})
-}
-
-func createTempFile(t *testing.T, body string) (*os.File, func()) {
-	t.Helper()
-
-	tmpfile, err := ioutil.TempFile("", "questions")
-
-	if err != nil {
-		t.Fatalf("could not create temp file %v", err)
-	}
-
-	tmpfile.Write([]byte(body))
-
-	removeFile := func() {
-		os.Remove(tmpfile.Name())
-	}
-
-	return tmpfile, removeFile
 }
 
 func assertLoadedFile(t *testing.T, loader *StubQuestionLoader, filename string) {
