@@ -1,0 +1,6 @@
+
+Todo:
+  ✔ Change "integration" test to actually be an integration test @done(19-02-13 08:57)
+  ✔ Move current tests to CLI test @done(19-02-13 08:57)
+  ✔ Test and implement QuestionLoader @done(19-02-13 17:53)
+  ☐ Test and implement Game
