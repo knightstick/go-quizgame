@@ -29,9 +29,8 @@ type StubGame struct {
 	total     int
 }
 
-func (game *StubGame) Play(questions []quizgame.Question) {
+func (game *StubGame) Play() {
 	game.playCalls = game.playCalls + 1
-	game.questions = questions
 }
 
 func (game *StubGame) Score() int {
@@ -50,8 +49,8 @@ func TestCLIIntegration(t *testing.T) {
 		in := strings.NewReader("\n")
 		out := &bytes.Buffer{}
 
-		cli := quizgame.NewCLI(in, out)
-		cli.Run(questionFile.Name())
+		cli := quizgame.NewCLI(in, out, &quizgame.FileSystemQuestionLoader{}, questionFile.Name())
+		cli.Run()
 
 		assertOutput(t, out, "You scored 0 out of 0\n")
 	})
@@ -63,8 +62,8 @@ func TestCLIIntegration(t *testing.T) {
 		in := strings.NewReader("2\n3\n666\n")
 		out := &bytes.Buffer{}
 
-		cli := quizgame.NewCLI(in, out)
-		cli.Run(questionFile.Name())
+		cli := quizgame.NewCLI(in, out, &quizgame.FileSystemQuestionLoader{}, questionFile.Name())
+		cli.Run()
 
 		t.Skip("skipping until all pieces integrate together")
 		assertOutput(t, out, "You scored 2 out of 3\n")

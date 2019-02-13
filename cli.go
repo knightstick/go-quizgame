@@ -3,6 +3,7 @@ package quizgame
 import (
 	"fmt"
 	"io"
+	"os"
 )
 
 // Question is the basic quiz question the user has to answer
@@ -18,7 +19,7 @@ type QuestionLoader interface {
 
 // Game allows the user to play and answer the questions
 type Game interface {
-	Play([]Question)
+	Play()
 	Score() int
 	NumberOfQuestions() int
 }
@@ -32,21 +33,25 @@ type CLI struct {
 }
 
 // NewCLI creates a new CLI to play the quiz game
-func NewCLI(in io.Reader, out io.Writer) *CLI {
-	loader := &FileSystemQuestionLoader{}
-	game := &QuizGame{}
+func NewCLI(in io.Reader, out io.Writer, loader QuestionLoader, filename string) *CLI {
+	questions := loader.Load(filename)
+	game := NewQuizGame(os.Stdin, questions)
+
+	return NewCLIWithGame(in, out, game)
+}
+
+// NewCLIWithGame allows creating a new CLI with the specified game
+func NewCLIWithGame(in io.Reader, out io.Writer, game Game) *CLI {
 	return &CLI{
-		QuestionLoader: loader,
-		Game:           game,
-		In:             in,
-		Out:            out,
+		Game: game,
+		In:   in,
+		Out:  out,
 	}
 }
 
 // Run runs the whole game
-func (cli CLI) Run(filename string) {
-	questions := cli.QuestionLoader.Load(filename)
-	cli.Game.Play(questions)
+func (cli CLI) Run() {
+	cli.Game.Play()
 
 	score := cli.Game.Score()
 	total := cli.Game.NumberOfQuestions()
