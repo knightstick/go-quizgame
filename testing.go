@@ -1,6 +1,7 @@
 package quizgame
 
 import (
+	"bytes"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -23,4 +24,13 @@ func CreateTempFile(t *testing.T, body string) (*os.File, func()) {
 	}
 
 	return tmpfile, removeFile
+}
+
+// AssertOutput checks that the output you pass in matches the string you expect
+func AssertOutput(t *testing.T, out *bytes.Buffer, expected string) {
+	actual := out.String()
+
+	if actual != expected {
+		t.Errorf("expected output %s, got %s", expected, actual)
+	}
 }

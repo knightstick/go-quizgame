@@ -2,11 +2,31 @@ package quizgame_test
 
 import (
 	"bytes"
+	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/knightstick/quizgame"
 )
+
+type StubGame struct {
+	playCalls int
+	questions []quizgame.Question
+	score     int
+	total     int
+}
+
+func (game *StubGame) Play() {
+	game.playCalls = game.playCalls + 1
+}
+
+func (game *StubGame) Score() int {
+	return game.score
+}
+
+func (game *StubGame) NumberOfQuestions() int {
+	return game.total
+}
 
 func TestCLI(t *testing.T) {
 	t.Run("Scores 0 of 0 when no questions", func(t *testing.T) {
@@ -19,7 +39,7 @@ func TestCLI(t *testing.T) {
 		cli.Run()
 
 		assertGamePlayed(t, game, []quizgame.Question{})
-		assertOutput(t, out, "You scored 0 out of 0\n")
+		quizgame.AssertOutput(t, out, "You scored 0 out of 0\n")
 	})
 
 	t.Run("Can score 2 out of 3", func(t *testing.T) {
@@ -38,6 +58,18 @@ func TestCLI(t *testing.T) {
 		cli.Run()
 
 		assertGamePlayed(t, game, questions)
-		assertOutput(t, out, "You scored 2 out of 3\n")
+		quizgame.AssertOutput(t, out, "You scored 2 out of 3\n")
 	})
+}
+
+func assertGamePlayed(t *testing.T, game *StubGame, questions []quizgame.Question) {
+	t.Helper()
+
+	if game.playCalls != 1 {
+		t.Error("did not play the game")
+	}
+
+	if !reflect.DeepEqual(game.questions, questions) {
+		t.Errorf("expected questions %v, got %v", questions, game.questions)
+	}
 }
