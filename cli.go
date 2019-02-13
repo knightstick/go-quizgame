@@ -26,10 +26,9 @@ type Game interface {
 
 // CLI is the command line interface to the quizgame
 type CLI struct {
-	QuestionLoader QuestionLoader
-	In             io.Reader
-	Out            io.Writer
-	Game           Game
+	In   io.Reader
+	Out  io.Writer
+	Game Game
 }
 
 // NewCLI creates a new CLI to play the quiz game
