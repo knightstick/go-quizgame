@@ -28,6 +28,8 @@ func CreateTempFile(t *testing.T, body string) (*os.File, func()) {
 
 // AssertOutput checks that the output you pass in matches the string you expect
 func AssertOutput(t *testing.T, out *bytes.Buffer, expected string) {
+	t.Helper()
+
 	actual := out.String()
 
 	if actual != expected {

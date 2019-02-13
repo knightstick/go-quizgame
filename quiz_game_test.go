@@ -1,6 +1,7 @@
 package quizgame_test
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 
@@ -55,10 +56,28 @@ func TestQuizGameNumberOfQuestions(t *testing.T) {
 	})
 }
 
+func TestQuizGameOutput(t *testing.T) {
+	t.Run("3 questions get printed", func(t *testing.T) {
+		questions := []quizgame.Question{
+			{Question: "1+1", Answer: "2"},
+			{Question: "Meaning of life", Answer: "42"},
+			{Question: "1+2", Answer: "3"},
+		}
+
+		out := &bytes.Buffer{}
+
+		game := quizgame.NewQuizGame(strings.NewReader("\n\n\n"), out, questions)
+		game.Play()
+
+		expectedOutput := "Problem #1: 1+1 = Problem #2: Meaning of life = Problem #3: 1+2 = "
+		quizgame.AssertOutput(t, out, expectedOutput)
+	})
+}
+
 func assertScore(t *testing.T, questions []quizgame.Question, answers string, score int) {
 	t.Helper()
 
-	game := quizgame.NewQuizGame(strings.NewReader(answers), questions)
+	game := quizgame.NewQuizGame(strings.NewReader(answers), &bytes.Buffer{}, questions)
 	game.Play()
 
 	actualScore := game.Score()
@@ -71,7 +90,7 @@ func assertScore(t *testing.T, questions []quizgame.Question, answers string, sc
 func assertNumberOfQuestions(t *testing.T, questions []quizgame.Question, total int) {
 	t.Helper()
 
-	game := quizgame.NewQuizGame(strings.NewReader(""), questions)
+	game := quizgame.NewQuizGame(strings.NewReader(""), &bytes.Buffer{}, questions)
 
 	actualNumberOfQuestions := game.NumberOfQuestions()
 

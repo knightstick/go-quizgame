@@ -3,7 +3,6 @@ package quizgame
 import (
 	"fmt"
 	"io"
-	"os"
 )
 
 // Question is the basic quiz question the user has to answer
@@ -34,7 +33,7 @@ type CLI struct {
 // NewCLI creates a new CLI to play the quiz game
 func NewCLI(in io.Reader, out io.Writer, loader QuestionLoader, filename string) *CLI {
 	questions := loader.Load(filename)
-	game := NewQuizGame(os.Stdin, questions)
+	game := NewQuizGame(in, out, questions)
 
 	return &CLI{
 		Game: game,

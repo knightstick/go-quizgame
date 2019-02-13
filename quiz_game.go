@@ -2,27 +2,33 @@ package quizgame
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 )
 
 // QuizGame allows answering the questions
 type QuizGame struct {
 	in        *bufio.Scanner
+	out       io.Writer
 	score     int
 	questions []Question
 }
 
 // NewQuizGame initialises a new QuizGame with the given input
-func NewQuizGame(in io.Reader, questions []Question) *QuizGame {
+func NewQuizGame(in io.Reader, out io.Writer, questions []Question) *QuizGame {
 	return &QuizGame{
 		in:        bufio.NewScanner(in),
+		out:       out,
 		questions: questions,
 	}
 }
 
 // Play takes a list of questions and allows playing the game
 func (game *QuizGame) Play() {
-	for _, question := range game.questions {
+	for idx, question := range game.questions {
+		questionString := fmt.Sprintf("Problem #%d: %s = ", idx+1, question.Question)
+		game.out.Write([]byte(questionString))
+
 		answer := game.readLine()
 
 		if game.correctAnswer(&question, answer) {
