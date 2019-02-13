@@ -37,11 +37,6 @@ func NewCLI(in io.Reader, out io.Writer, loader QuestionLoader, filename string)
 	questions := loader.Load(filename)
 	game := NewQuizGame(os.Stdin, questions)
 
-	return NewCLIWithGame(in, out, game)
-}
-
-// NewCLIWithGame allows creating a new CLI with the specified game
-func NewCLIWithGame(in io.Reader, out io.Writer, game Game) *CLI {
 	return &CLI{
 		Game: game,
 		In:   in,

@@ -15,7 +15,7 @@ func TestCLI(t *testing.T) {
 
 		game := &StubGame{questions: []quizgame.Question{}}
 
-		cli := quizgame.NewCLIWithGame(in, out, game)
+		cli := &quizgame.CLI{In: in, Out: out, Game: game}
 		cli.Run()
 
 		assertGamePlayed(t, game, []quizgame.Question{})
@@ -34,7 +34,7 @@ func TestCLI(t *testing.T) {
 
 		game := &StubGame{score: 2, total: 3, questions: questions}
 
-		cli := quizgame.NewCLIWithGame(in, out, game)
+		cli := &quizgame.CLI{In: in, Out: out, Game: game}
 		cli.Run()
 
 		assertGamePlayed(t, game, questions)
