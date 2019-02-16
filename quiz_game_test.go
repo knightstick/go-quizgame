@@ -4,9 +4,26 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/knightstick/quizgame"
 )
+
+type stubQuizTimer struct {
+	sleepCalls int
+}
+
+func (timer *stubQuizTimer) Sleep() {
+	timer.sleepCalls++
+}
+
+type slowInput struct{}
+
+func (in *slowInput) Read(p []byte) (int, error) {
+	time.Sleep(1 * time.Second)
+
+	return 8, nil
+}
 
 func TestQuizGameScore(t *testing.T) {
 	t.Run("base case game with no questions", func(t *testing.T) {
@@ -38,6 +55,22 @@ func TestQuizGameScore(t *testing.T) {
 	})
 }
 
+func TestQuizTimer(t *testing.T) {
+	t.Run("times out if waiting too long", func(t *testing.T) {
+		timer := &stubQuizTimer{}
+		in := &slowInput{}
+		questions := []quizgame.Question{
+			quizgame.Question{Question: "1+1", Answer: "2"},
+		}
+		game := quizgame.NewQuizGame(in, &bytes.Buffer{}, questions, timer)
+		game.Play()
+
+		if timer.sleepCalls != 1 {
+			t.Error("expected to call the timer")
+		}
+	})
+}
+
 func TestQuizGameNumberOfQuestions(t *testing.T) {
 	t.Run("no questions have total 0", func(t *testing.T) {
 		questions := []quizgame.Question{}
@@ -66,7 +99,7 @@ func TestQuizGameOutput(t *testing.T) {
 
 		out := &bytes.Buffer{}
 
-		game := quizgame.NewQuizGame(strings.NewReader("\n\n\n"), out, questions)
+		game := quizgame.NewQuizGame(strings.NewReader("\n\n\n"), out, questions, QuickTimer)
 		game.Play()
 
 		expectedOutput := "Problem #1: 1+1 = Problem #2: Meaning of life = Problem #3: 1+2 = "
@@ -77,7 +110,7 @@ func TestQuizGameOutput(t *testing.T) {
 func assertScore(t *testing.T, questions []quizgame.Question, answers string, score int) {
 	t.Helper()
 
-	game := quizgame.NewQuizGame(strings.NewReader(answers), &bytes.Buffer{}, questions)
+	game := quizgame.NewQuizGame(strings.NewReader(answers), &bytes.Buffer{}, questions, QuickTimer)
 	game.Play()
 
 	actualScore := game.Score()
@@ -90,7 +123,7 @@ func assertScore(t *testing.T, questions []quizgame.Question, answers string, sc
 func assertNumberOfQuestions(t *testing.T, questions []quizgame.Question, total int) {
 	t.Helper()
 
-	game := quizgame.NewQuizGame(strings.NewReader(""), &bytes.Buffer{}, questions)
+	game := quizgame.NewQuizGame(strings.NewReader(""), &bytes.Buffer{}, questions, QuickTimer)
 
 	actualNumberOfQuestions := game.NumberOfQuestions()
 

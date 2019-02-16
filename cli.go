@@ -31,9 +31,9 @@ type CLI struct {
 }
 
 // NewCLI creates a new CLI to play the quiz game
-func NewCLI(in io.Reader, out io.Writer, loader QuestionLoader, filename string) *CLI {
+func NewCLI(in io.Reader, out io.Writer, loader QuestionLoader, timer QuizTimer, filename string) *CLI {
 	questions := loader.Load(filename)
-	game := NewQuizGame(in, out, questions)
+	game := NewQuizGame(in, out, questions, timer)
 
 	return &CLI{
 		Game: game,

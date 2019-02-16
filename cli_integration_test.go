@@ -4,9 +4,12 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/knightstick/quizgame"
 )
+
+var QuickTimer = &quizgame.WaitQuizTimer{SleepTime: 1 * time.Microsecond}
 
 func TestCLIIntegration(t *testing.T) {
 	t.Run("Scores 0 out of 0 when no questions", func(t *testing.T) {
@@ -16,7 +19,7 @@ func TestCLIIntegration(t *testing.T) {
 		in := strings.NewReader("\n")
 		out := &bytes.Buffer{}
 
-		cli := quizgame.NewCLI(in, out, &quizgame.FileSystemQuestionLoader{}, questionFile.Name())
+		cli := quizgame.NewCLI(in, out, &quizgame.FileSystemQuestionLoader{}, QuickTimer, questionFile.Name())
 		cli.Run()
 
 		quizgame.AssertOutput(t, out, "You scored 0 out of 0\n")
@@ -29,7 +32,7 @@ func TestCLIIntegration(t *testing.T) {
 		in := strings.NewReader("2\n3\n666\n")
 		out := &bytes.Buffer{}
 
-		cli := quizgame.NewCLI(in, out, &quizgame.FileSystemQuestionLoader{}, questionFile.Name())
+		cli := quizgame.NewCLI(in, out, &quizgame.FileSystemQuestionLoader{}, QuickTimer, questionFile.Name())
 		cli.Run()
 
 		expectedOutput := "Problem #1: 1+1 = Problem #2: 1+2 = Problem #3: 1+3 = You scored 2 out of 3\n"
