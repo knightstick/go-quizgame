@@ -18,7 +18,7 @@ func main() {
 
 	gameLength := time.Duration(*gameLengthSeconds) * time.Second
 
-	timer := quizgame.WaitQuizTimer{SleepTime: gameLength}
+	timer := time.NewTimer(gameLength)
 	cli := quizgame.NewCLI(os.Stdin, os.Stdout, &quizgame.FileSystemQuestionLoader{}, timer, *filenamePtr)
 	cli.Run()
 }

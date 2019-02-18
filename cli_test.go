@@ -16,8 +16,9 @@ type StubGame struct {
 	total     int
 }
 
-func (game *StubGame) Play() {
+func (game *StubGame) Play() quizgame.ExitCode {
 	game.playCalls = game.playCalls + 1
+	return quizgame.GameFinished
 }
 
 func (game *StubGame) Score() int {

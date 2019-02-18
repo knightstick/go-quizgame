@@ -55,18 +55,34 @@ func TestQuizGameScore(t *testing.T) {
 	})
 }
 
-func TestQuizTimer(t *testing.T) {
-	t.Run("times out if waiting too long", func(t *testing.T) {
-		timer := &stubQuizTimer{}
+func TestGameTimeout(t *testing.T) {
+	t.Run("timer runs out first", func(t *testing.T) {
+		timer := time.NewTimer(1 * time.Millisecond)
 		in := &slowInput{}
+
 		questions := []quizgame.Question{
 			quizgame.Question{Question: "1+1", Answer: "2"},
 		}
 		game := quizgame.NewQuizGame(in, &bytes.Buffer{}, questions, timer)
-		game.Play()
+		exit := game.Play()
 
-		if timer.sleepCalls != 1 {
-			t.Error("expected to call the timer")
+		if exit != quizgame.Timeout {
+			t.Error("expected game to end with timeout")
+		}
+	})
+
+	t.Run("game finishes out first", func(t *testing.T) {
+		timer := time.NewTimer(100 * time.Millisecond)
+		in := strings.NewReader("2\n")
+
+		questions := []quizgame.Question{
+			quizgame.Question{Question: "1+1", Answer: "2"},
+		}
+		game := quizgame.NewQuizGame(in, &bytes.Buffer{}, questions, timer)
+		exit := game.Play()
+
+		if exit != quizgame.GameFinished {
+			t.Error("expected game to end with the game finishing")
 		}
 	})
 }

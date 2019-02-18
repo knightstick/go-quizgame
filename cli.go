@@ -3,6 +3,7 @@ package quizgame
 import (
 	"fmt"
 	"io"
+	"time"
 )
 
 // Question is the basic quiz question the user has to answer
@@ -18,7 +19,7 @@ type QuestionLoader interface {
 
 // Game allows the user to play and answer the questions
 type Game interface {
-	Play()
+	Play() ExitCode
 	Score() int
 	NumberOfQuestions() int
 }
@@ -31,7 +32,7 @@ type CLI struct {
 }
 
 // NewCLI creates a new CLI to play the quiz game
-func NewCLI(in io.Reader, out io.Writer, loader QuestionLoader, timer QuizTimer, filename string) *CLI {
+func NewCLI(in io.Reader, out io.Writer, loader QuestionLoader, timer *time.Timer, filename string) *CLI {
 	questions := loader.Load(filename)
 	game := NewQuizGame(in, out, questions, timer)
 

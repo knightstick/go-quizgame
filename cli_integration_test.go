@@ -9,7 +9,7 @@ import (
 	"github.com/knightstick/quizgame"
 )
 
-var QuickTimer = &quizgame.WaitQuizTimer{SleepTime: 1 * time.Microsecond}
+var QuickTimer = time.NewTimer(1 * time.Millisecond)
 
 func TestCLIIntegration(t *testing.T) {
 	t.Run("Scores 0 out of 0 when no questions", func(t *testing.T) {
