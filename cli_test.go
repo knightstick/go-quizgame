@@ -40,7 +40,7 @@ func TestCLI(t *testing.T) {
 		cli.Run()
 
 		assertGamePlayed(t, game, []quizgame.Question{})
-		quizgame.AssertOutput(t, out, "You scored 0 out of 0\n")
+		quizgame.AssertOutput(t, out, "\nYou scored 0 out of 0\n")
 	})
 
 	t.Run("Can score 2 out of 3", func(t *testing.T) {
@@ -59,7 +59,7 @@ func TestCLI(t *testing.T) {
 		cli.Run()
 
 		assertGamePlayed(t, game, questions)
-		quizgame.AssertOutput(t, out, "You scored 2 out of 3\n")
+		quizgame.AssertOutput(t, out, "\nYou scored 2 out of 3\n")
 	})
 }
 

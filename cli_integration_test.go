@@ -22,7 +22,7 @@ func TestCLIIntegration(t *testing.T) {
 		cli := quizgame.NewCLI(in, out, &quizgame.FileSystemQuestionLoader{}, QuickTimer, questionFile.Name())
 		cli.Run()
 
-		quizgame.AssertOutput(t, out, "You scored 0 out of 0\n")
+		quizgame.AssertOutput(t, out, "\nYou scored 0 out of 0\n")
 	})
 
 	t.Run("Can score 2 out of 3", func(t *testing.T) {
@@ -35,7 +35,7 @@ func TestCLIIntegration(t *testing.T) {
 		cli := quizgame.NewCLI(in, out, &quizgame.FileSystemQuestionLoader{}, QuickTimer, questionFile.Name())
 		cli.Run()
 
-		expectedOutput := "Problem #1: 1+1 = Problem #2: 1+2 = Problem #3: 1+3 = You scored 2 out of 3\n"
+		expectedOutput := "Problem #1: 1+1 = Problem #2: 1+2 = Problem #3: 1+3 = \nYou scored 2 out of 3\n"
 		quizgame.AssertOutput(t, out, expectedOutput)
 	})
 }

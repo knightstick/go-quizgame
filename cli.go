@@ -49,5 +49,5 @@ func (cli CLI) Run() {
 
 	score := cli.Game.Score()
 	total := cli.Game.NumberOfQuestions()
-	cli.Out.Write([]byte(fmt.Sprintf("You scored %d out of %d\n", score, total)))
+	cli.Out.Write([]byte(fmt.Sprintf("\nYou scored %d out of %d\n", score, total)))
 }
